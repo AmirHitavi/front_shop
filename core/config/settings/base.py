@@ -10,25 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from os import path
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-!73=x!j1--dp1+$z-h76(s5jt$w)qt#bavex5k31a@q@7s-h85"
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 
 # Application definition
+
+LOCAL_APPS = []
+
+THIRD_PARTY_APPS = []
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -37,6 +29,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    *THIRD_PARTY_APPS,
+    *LOCAL_APPS,
 ]
 
 MIDDLEWARE = [
@@ -54,7 +48,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [path.join(BASE_DIR, "core", "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -68,17 +62,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
 
 
 # Password validation
@@ -116,6 +99,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATIC_ROOT = path.join(BASE_DIR, "static")
+STATICFILES_DIR = [path.join(BASE_DIR, "core", "assets")]
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = path.join(BASE_DIR, "media")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
