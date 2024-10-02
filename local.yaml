@@ -16,8 +16,24 @@ services:
       - ./.envs/.local/.django
     ports:
       - "8000:8000"
+    depends_on:
+      - db  
+
+  db:
+    container_name: db
+    build:
+       context: .
+       dockerfile: ./docker/local/postgres/Dockerfile
+
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+      - local_postgres_backup:/backups         
+    env_file:
+      - ./.envs/.local/.postgres    
 
 
 volumes:
   static_volume:
   media_volume:
+  local_postgres_data:
+  local_postgres_backup:
