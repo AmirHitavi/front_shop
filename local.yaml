@@ -1,0 +1,23 @@
+services:
+  
+  web:
+    container_name: web
+    image: web
+    build: 
+       context: .
+       dockerfile: ./docker/local/django/Dockerfile
+
+    restart: always
+    volumes:
+      - ./core:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+    env_file:
+      - ./.envs/.local/.django
+    ports:
+      - "8000:8000"
+
+
+volumes:
+  static_volume:
+  media_volume:
