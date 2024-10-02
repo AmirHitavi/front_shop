@@ -1,26 +1,16 @@
-from decouple import Config, RepositoryEnv
+from decouple import config
 
 from .base import *  # noqa
 
-# specify the path
-local_django_env_file_path = path.join(BASE_DIR, ".envs", ".local", ".django")
-local_postgres_env_file_path = path.join(BASE_DIR, ".envs", ".local", ".postgres")
-
-
-local_django_config = Config(RepositoryEnv(local_django_env_file_path))
-local_postgres_config = Config(RepositoryEnv(local_postgres_env_file_path))
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = local_django_config("DJANGO_LOCAL_SECRET_KEY")
+SECRET_KEY = config("DJANGO_LOCAL_SECRET_KEY", default="django")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = local_django_config(
+ALLOWED_HOSTS = config(
     "DJANGO_LOCAL_ALLOWED_HOST",
+    default="127.0.0.1,localhost",
     cast=lambda hosts: [host.strip() for host in hosts.split(",")],
 )
 
