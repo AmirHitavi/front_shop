@@ -55,3 +55,21 @@ migrate:
 superuser:
 	# Create a superuser for the Django application
 	docker exec -it web python manage.py createsuperuser
+	
+createsuperuser:
+	# Create a superuser for the Django application
+	docker exec -it web python manage.py createsuperuser
+
+backup:
+	# Execute the backup script in the db container
+	docker exec db backup.sh
+
+backups:
+	# Execute the backups script in the db container
+	docker exec db backups.sh
+
+restore:
+	# Restore the database from the specified backup file
+	# To use this target, specify the BACKUP_FILE variable like this:
+	# make restore BACKUP_FILE=your_backup
+	docker exec db restore.sh $(BACKUP_FILE)
