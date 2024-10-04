@@ -1,12 +1,12 @@
+version: "3.9"
+
 services:
-  
   web:
     container_name: web
     image: web
     build: 
        context: .
        dockerfile: ./docker/local/django/Dockerfile
-
     restart: always
     volumes:
       - ./core:/app
@@ -14,22 +14,26 @@ services:
       - media_volume:/app/media
     env_file:
       - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
     ports:
       - "8000:8000"
     depends_on:
-      - db  
+      - db 
+    networks:
+      - front-shop
 
   db:
     container_name: db
     build:
        context: .
        dockerfile: ./docker/local/postgres/Dockerfile
-
     volumes:
       - local_postgres_data:/var/lib/postgresql/data
       - local_postgres_backup:/backups         
     env_file:
-      - ./.envs/.local/.postgres    
+      - ./.envs/.local/.postgres  
+    networks:
+      - front-shop  
 
   pgadmin:
     container_name: pgadmin4
@@ -38,25 +42,35 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-        - "8888:5050"
+        - "5050:80"
     depends_on:
       - db     
+    networks:
+      - front-shop
   
   redis:
     container_name: redis
     image: redis
     restart: always
+    networks:
+      - front-shop
 
   rabbitmq:
-     container_name: rabbitmq
-     image: rabbitmq:management
-     restart: always
-     ports:
-       - '5672:5672'
-       - '15672:15672'  
+    container_name: rabbitmq
+    image: rabbitmq:management
+    restart: always
+    ports:
+      - '5672:5672'
+      - '15672:15672'  
+    networks:
+      - front-shop
 
 volumes:
   static_volume:
   media_volume:
   local_postgres_data:
   local_postgres_backup:
+
+networks:
+  front-shop:
+    driver: bridge
