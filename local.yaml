@@ -37,7 +37,7 @@ services:
       - front-shop  
 
   pgadmin:
-    container_name: pgadmin4
+    container_name: pgadmin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
@@ -65,6 +65,45 @@ services:
       - '15672:15672'  
     networks:
       - front-shop
+
+  celery_worker:
+      container_name: celery_worker
+      build:
+        context: .
+        dockerfile: ./docker/local/django/Dockerfile
+      command: /start-celeryworker.sh
+      volumes:
+        - ./core:/app
+      env_file:
+        - ./.envs/.local/.django
+        - ./.envs/.local/.postgres
+      depends_on:
+        - db
+        - redis
+        - rabbitmq
+      networks:
+        - front-shop
+
+  flower:
+    container_name: flower
+    build:
+      context: .
+      dockerfile: ./docker/local/django/Dockerfile
+    command: /start-flower.sh
+    volumes:
+      - ./core:/app
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "5555:5555"
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+    networks:
+      - front-shop
+
 
 volumes:
   static_volume:

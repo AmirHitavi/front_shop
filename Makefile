@@ -60,3 +60,6 @@ backup:
 
 backups:
 	docker exec db backups.sh
+
+remove-all:
+	docker compose -f local.yaml down --rmi all
